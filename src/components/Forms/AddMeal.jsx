@@ -25,7 +25,7 @@ const AddMeal = (props)=> {
         <div className="form-container">
             <h1 className="form-header">Add Meal</h1>
                 <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
-                    <div className="meal-daate-time">
+                    <div className="meal-date-time">
                     <label>Date: </label>
                     <input {...register("date", {required: true})} type="date" />
                     <label>Time: </label>

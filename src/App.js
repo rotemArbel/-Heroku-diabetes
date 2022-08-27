@@ -37,14 +37,19 @@ function App() {
   const setApp =  async ()=> {
     const meals = await fb.getData('meals');
     const tests = await fb.getData('tests');
-    setState({...state,meals, tests, combined:[...meals, ...tests]});
+    setState({...state,meals, tests, combined:sortCombined([...meals, ...tests])});
+  }
 
-  //   if ('serviceWorker' in navigator) {
-  //     navigator.serviceWorker.register('service-worker.ts', {scop:'/'})
-  //     .then((reg)=> {
-  //       console.log(reg)
-  //     });
-  // }
+
+  const sortCombined = (combined) => {
+   return combined.sort(function(a, b) {
+      var keyA = new Date(a.timestamp),
+        keyB = new Date(b.timestamp);
+      // Compare the 2 dates
+      if (keyA < keyB) return -1;
+      if (keyA > keyB) return 1;
+      return 0;
+    });
   }
   
 
