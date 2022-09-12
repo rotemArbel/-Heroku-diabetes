@@ -3,7 +3,6 @@ import './test.scss';
 
 const Test = (props) => {
     const test = props.test
-    // console.log(test)
     const resultColor = Number(test.result) > 130 ? 'red' : 'green';
     return (
         <div className="test-card">

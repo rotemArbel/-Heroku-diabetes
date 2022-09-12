@@ -1,0 +1,8 @@
+{
+    "appId": "io.ionic.nameofyourapp",
+    "appName": "Yoram",
+    "bundledWebRuntime": false,
+    "npmClient": "npm",
+    "webDir": "build",
+    "cordova": {}
+  }

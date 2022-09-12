@@ -1,0 +1,7 @@
+{
+  "name": "Yoram",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

@@ -3,9 +3,8 @@ import './meal.scss';
 
 const Meal = (props) => {
     const meal = props.meal
-    console.log(meal)
     return (
-        <div className="meal-card">
+        <div key={props.key} className="meal-card">
             <div className="meal-header">
                 <div className="meal-date">{meal.date}</div>
                 <div className="meal-time">{meal.time}</div>
