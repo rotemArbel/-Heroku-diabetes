@@ -1,7 +1,7 @@
 import {initializeApp} from "firebase/app";
 import {getFirestore} from "firebase/firestore";
 import { getAuth, GoogleAuthProvider  } from "firebase/auth";
-import {collection, query, where, addDoc, getDocs} from "firebase/firestore";
+import {collection, query, where, addDoc, getDocs, orderBy} from "firebase/firestore";
 import {getAnalytics} from "firebase/analytics";
 import {async} from "@firebase/util";
 
@@ -16,6 +16,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig)
+const analytics = getAnalytics(app);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const postData  = async (collectionName, data, user) => {
@@ -39,7 +40,7 @@ export const postData  = async (collectionName, data, user) => {
     }
 }
 export const getData = async (collectionName, user) => {
-    const q = query(collection(db, collectionName), where("user", "==", user));
+    const q = query(collection(db, collectionName), where("user", "==", user),orderBy("timestamp"));
     // const querySnapshot = await getDocs(q);
     try {
         const data = await getDocs(q);
@@ -55,18 +56,21 @@ export const getData = async (collectionName, user) => {
 const collectionToArray = (collection) => {
     const array = [];
     collection.forEach((doc) => {
-        array.push(doc.data());
+        console.log(doc.id)
+        const data = doc.data();
+        data.id = doc.id;
+        array.push(data);
     })
-    array.sort(function (a, b) {
-        var keyA = new Date(a.timestamp),
-            keyB = new Date(b.timestamp);
-        // Compare the 2 dates
-        if (keyA < keyB) 
-            return -1;
-        if (keyA > keyB) 
-            return 1;
-        return 0;
-    });
+    // array.sort(function (a, b) {
+    //     var keyA = new Date(a.timestamp),
+    //         keyB = new Date(b.timestamp);
+    //     // Compare the 2 dates
+    //     if (keyA < keyB) 
+    //         return -1;
+    //     if (keyA > keyB) 
+    //         return 1;
+    //     return 0;
+    // });
 
     return array;
 }

@@ -32,16 +32,15 @@ function App() {
     // const context = createContext(initialState)
     const [state,
         setState] = useState(initialState);
-    useMemo(() => {
+    useEffect(() => {
         auth.onAuthStateChanged((user)=> {
-            // user.name = 'Rotem'
             if (user) {
-                console.log(user)
+                console.log(user.displayName)
                 setState({...state, user: user.uid , userName: user.displayName})
-                auth.setPersistence('local');
+                // auth.setPersistence('local');
             // console.log(user)
                 setUser(user.uid)
-                setApp('home');
+                // setApp('home');
             } else {
                 logout();
             }
@@ -55,16 +54,39 @@ function App() {
         if (!user) {
             setState({...state, user: null});
         } else {
-
-        }
-        let meals;
-        let tests;
-        meals = await getData('meals', user);
-        tests = await getData('tests', user);
-        setState({...state, user});
-        if (page) {
-            if (user) {
-                const startPage = page;
+            let meals;
+            let tests;
+            meals = await getData('meals', user);
+            tests = await getData('tests', user);
+            setState({...state, user});
+            if (page) {
+                if (user) {
+                    const startPage = page;
+                    setState({
+                        ...state,
+                        meals,
+                        tests,
+                        user,
+                        page: null,
+                        load: true,
+                        combined: sortCombined(meals, tests),
+                        modal: {
+                            open: false,
+                            type: null
+                        }
+                    });
+                 } else {
+                    setState({
+                        ...state,
+                        user,
+                        page: null,
+                        load: true,
+                        modal: {
+                            open: false,
+                            type: null
+                        }
+                    });
+                 }
                 setState({
                     ...state,
                     meals,
@@ -78,45 +100,22 @@ function App() {
                         type: null
                     }
                 });
-             } else {
+            } else {
                 setState({
                     ...state,
                     user,
-                    page: null,
-                    load: true,
+                    meals,
+                    tests,
+                    combined: sortCombined(meals, tests),
                     modal: {
                         open: false,
                         type: null
                     }
                 });
-             }
-            setState({
-                ...state,
-                meals,
-                tests,
-                user,
-                page: null,
-                load: true,
-                combined: sortCombined(meals, tests),
-                modal: {
-                    open: false,
-                    type: null
-                }
-            });
-        } else {
-            setState({
-                ...state,
-                user,
-                meals,
-                tests,
-                combined: sortCombined(meals, tests),
-                modal: {
-                    open: false,
-                    type: null
-                }
-            });
+            }
+          
         }
-      
+     
 
     }
 

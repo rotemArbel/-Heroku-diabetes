@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow public read access, but only content owners can write
+     match /{document=**} {
+      allow read: if request.auth != null;
+      allow create: if request.auth.uid == request.resource.data.user;
+      allow update, delete: if request.auth.uid == request.resource.data.user;
+    }
+  }
+}

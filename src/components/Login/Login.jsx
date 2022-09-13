@@ -3,7 +3,7 @@ import {useForm} from "react-hook-form";
 import {useState} from "react";
 import {auth} from '../../Services/firebaseDB';
 import { signInWithPopup,GoogleAuthProvider } from "firebase/auth";
-
+import googleLogo from '../../assets/g-logo.svg';
 import '../Forms/forms.scss';
 import { signInWithPhoneNumber,  RecaptchaVerifier  } from "firebase/auth";
 
@@ -85,19 +85,19 @@ const Login = (props) => {
     }
     return (
         <div className="container">
-            <button onClick={google}>google</button>
+            <h1>Login</h1>
             <div className="form-container login">
-                <h3>Login</h3>
+                <h3>Enter phone number</h3>
                 <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
                     <input type="text" {...register("user", {required: true})}/>
                     <input type="submit" value="Send code"/>
                 </form>
                 {codeSent && <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
-                    <input type="text" {...register("code", {required: true})}/>
+                    <input type="text" {...register("code", {required: true})} placeholder="Enter code"/>
                     <input type="submit" value="Login"/>
                 </form> } 
-                
-
+                <h3>Or</h3>
+                <button className="google" onClick={google}><img src={googleLogo} />Continue with google</button>
             </div>
             <div id="recaptcha-container"></div>
         </div>
