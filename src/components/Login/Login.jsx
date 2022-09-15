@@ -58,6 +58,7 @@ const Login = (props) => {
 
 
         signInWithPopup(auth, provider).then(function(result) {
+            //TODO: save user to store
               var token = result.credential.accessToken;
               var user = result.user;
                 

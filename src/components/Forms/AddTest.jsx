@@ -1,17 +1,24 @@
-import React from "react";
+import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import "./forms.scss";
+import Loader from "../Loader/Loader";
 
 const AddTest = (props) => {
     const {reset, register, handleSubmit, watch, formState: {
             errors
         }} = useForm();
-    const onSubmit = (data) => {
+    
+        const onSubmit = (data) => {
+            setLoad(true);
         props.postData('tests', data, props.user);
         reset();
     };
+
+    const [load, setLoad] = useState(false);
     return (
         <div className="form-container">
+             {load && <Loader size="15%"/>  }
+             <div style={{opacity: load ? 0 : 1}}>
             <div className="close" onClick={() => props.close()}/>
             <h3 className="form-header">Add Test</h3>
             <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
@@ -25,6 +32,7 @@ const AddTest = (props) => {
 
                 <input type="submit" value="Add"/>
             </form>
+            </div>
         </div>
     )
 }

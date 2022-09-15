@@ -14,10 +14,11 @@ import ReactDOMServer from "react-dom/server";
 
 const CombinedList = (props) => {
     useEffect(() => {
-      setList(props.list)
-    }, []);
+        setList(props.list)
+    }, );
 
-    const [List, setList] = useState([]);
+    const [List,
+        setList] = useState([]);
 
     const download = () => {
         const el = <div
@@ -34,9 +35,9 @@ const CombinedList = (props) => {
                           <div className="list-container">
                               <h1>{key}</h1>
                               {List[key].map((item) => (
-                                <>
+                                <div key={item.id}>
                                    {item.type === 'meals' ? <Meal meal={item}/> : <Test test={item}/>}
-                                </>
+                                </div>
                               ))}
                           </div>
 
@@ -65,6 +66,7 @@ const CombinedList = (props) => {
   });
   return (
       <div className="list-container">
+          {console.log(List)}
            <div className="add-btns">
                 <Card text="Add Meal" img={meal} onClick={props.setPage} page='mealsList'/>
                 <Card text="Add Test" img={test} onClick={props.setPage} page='testsList'/>
@@ -92,22 +94,10 @@ const CombinedList = (props) => {
                       ))}
               </div>
           </div>
-          {/* <div className="swiper-pagination"></div> */}
           <div className="swiper-button-prev"></div>
           <div className="swiper-button-next"></div>
       </div>
   )
-    // return (
-    //   <div className="test-list">
-    //         {List.map((item) => (
-    //         <div>
-    //             {item.type === 'meals' ? <Meal meal={item}/> : <Test test={item}/>}
-    //         </div>
-           
-    //          ))}
-    //   </div>   
-        
-    // )
 }
 
 export default CombinedList;

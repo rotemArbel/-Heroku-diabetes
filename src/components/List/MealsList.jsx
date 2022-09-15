@@ -31,7 +31,7 @@ const MealsList = (props) => {
                 .map((key, value) => (
                     <div className="list-container">
                         {List[key].map((item) => (
-                            <Meal key={item.timestamp} meal={item}></Meal>
+                            <Meal meal={item} ></Meal>
                         ))}
                     </div>
 
@@ -58,6 +58,7 @@ const MealsList = (props) => {
     });
     return (
         <div className="list-container">
+              {console.log(List)}
             <div className="add-btns">
                 <Card img={Download} onClick={download}/>
                 <Card text="Add Meal" img={plus} onClick={props.add} page='addMeal'/>
@@ -71,10 +72,10 @@ const MealsList = (props) => {
                         .reverse()
                         .map((key, value) => (
 
-                            <div key={Math.random()} className="swiper-slide">
+                            <div key={key={key}} className="swiper-slide">
                                 <h1>{key}</h1>
                                 {List[key].map((item) => (
-                                    <Meal key={item.timestamp} meal={item}></Meal>
+                                    <Meal deleteDoc={props.deleteDoc} meal={item}></Meal>
                                 ))}
                             </div>
 

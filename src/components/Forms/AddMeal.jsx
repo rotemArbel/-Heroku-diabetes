@@ -1,15 +1,16 @@
-import React from "react";
+import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {useState} from "react";
 import "./forms.scss";
-import Meal from "../Meal/Meal";
+import Loader from "../Loader/Loader";
+
 
 const AddMeal = (props) => {
     const {reset, register, handleSubmit, watch, formState: {
             errors
         }} = useForm();
-    const onSubmit = (data) => {
-        // props.close()
+
+    const onSubmit = async (data) => {
+        setLoad(true);
         const dataToSend = {};
         const items = [];
         for (const key in data) {
@@ -25,17 +26,31 @@ const AddMeal = (props) => {
         reset();
     };
 
-    const [items,
-        setItems] = useState(1);
+    const [load, setLoad] = useState(false);
+    
+    const [items, setItems] = useState(1);
 
     const [addedMeals, setAddedMeals] = useState({});
+   
     const addItem = (key)=> {
         const newItem = watch();
+        console.log(newItem)
         setAddedMeals(newItem)
         setItems(items + 1)
-    }    
+    }; 
+    const removeItem = (index) => {
+        const currentAddedMeals = {...addedMeals}
+        console.log(currentAddedMeals);
+        delete currentAddedMeals[index];
+        console.log(currentAddedMeals);
+        setItems(items - 1)
+        setAddedMeals(currentAddedMeals);
+    }
+
     return (
         <div className="form-container">
+            {load && <Loader size="15%"/>  }
+            <div style={{opacity: load ? 0 : 1}}>
             <div className="close" onClick={()=>props.close()}/>
             <h3 className="form-header">Add Meal</h3>
             <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
@@ -53,6 +68,7 @@ const AddMeal = (props) => {
                               <div className="meal-item-name meal-item">{addedMeals[index+"-item"].name}</div>
                               <div className="meal-item-quantity meal-item">{addedMeals[index+"-item"].quantity}</div>
                               <div className="meal-item-notes meal-item">{addedMeals[index+"-item"].notes}</div>
+                              <div onClick={()=>removeItem(index+"-item")}>X</div>
                           </div>
                             : <>
                             <label>Item:
@@ -72,6 +88,8 @@ const AddMeal = (props) => {
 
                 <input type="submit" value="Submit"/>
             </form>
+            </div>
+         
         </div>
     )
 }

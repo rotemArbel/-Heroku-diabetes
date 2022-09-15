@@ -1,9 +1,11 @@
 import {initializeApp} from "firebase/app";
 import {getFirestore} from "firebase/firestore";
 import { getAuth, GoogleAuthProvider  } from "firebase/auth";
-import {collection, query, where, addDoc, getDocs, orderBy} from "firebase/firestore";
+import {collection, query, where, addDoc, getDocs, orderBy, deleteDoc, doc } from "firebase/firestore";
 import {getAnalytics} from "firebase/analytics";
 import {async} from "@firebase/util";
+import moment from 'moment';
+import { createAsyncThunk } from '@reduxjs/toolkit'
 
 const firebaseConfig = {
     apiKey: "AIzaSyB4-TC4SCvgL5Z3bt2Tzr1vQR8vWiCcVXw",
@@ -19,6 +21,7 @@ const app = initializeApp(firebaseConfig)
 const analytics = getAnalytics(app);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+
 export const postData  = async (collectionName, data, user) => {
     data.timestamp = Date.parse(data.date + "T" + data.time);
     const date = data.date;
@@ -52,11 +55,82 @@ export const getData = async (collectionName, user) => {
     }
 
 }
+export const deleteDocument = async (collection, docId) => {
+    try {
+        await deleteDoc(doc(db, collection, docId));
+    } catch (e) {
+        console.error(e);
+    }
+   
+}
+export const sortCombined = (meals, tests) => {
+    const combined = {};
+    Object
+        .keys(meals)
+        .map((key) => {
+            if (combined.hasOwnProperty(key)) {
+                combined[key] = [
+                    ...combined[key],
+                    ...meals[key]
+                ];
+            } else {
+                combined[key] = meals[key];
+            }
+        })
+    Object
+        .keys(tests)
+        .map((key) => {
+            if (combined.hasOwnProperty(key)) {
+                combined[key] = [
+                    ...combined[key],
+                    ...tests[key]
+                ];
+            } else {
+                combined[key] = tests[key];
+            }
+        });
 
+    const orderedDates = {};
+    Object
+        .keys(combined)
+        .sort(function (a, b) {
+            return moment(a, 'DD/MM/YYYY').toDate() - moment(b, 'DD/MM/YYYY').toDate();
+        })
+        .forEach(function (key) {
+            orderedDates[key] = combined[key];
+        });
+    Object
+        .values(orderedDates)
+        .forEach((value) => {
+            value
+                .sort(function (a, b) {
+                    var keyA = new Date(a.timestamp),
+                        keyB = new Date(b.timestamp);
+                    // Compare the 2 dates
+                    if (keyA < keyB) 
+                        return -1;
+                    if (keyA > keyB) 
+                        return 1;
+                    return 0;
+                });
+        })
+
+    return orderedDates
+}
+export const getAllData =  async (user) => {
+    const meals = await getData('meals', user);
+    const tests = await getData('tests', user);
+    const combined = sortCombined(meals, tests);
+    return {
+        meals,
+        tests,
+        combined
+    };
+}
 const collectionToArray = (collection) => {
     const array = [];
     collection.forEach((doc) => {
-        console.log(doc.id)
+        // console.log(doc.id)
         const data = doc.data();
         data.id = doc.id;
         array.push(data);
@@ -86,6 +160,20 @@ const sortByDate = (dataArray) => {
     })
     return data;
 }
+
+// export const getAllData = createAsyncThunk(
+//     'data/getAll',
+//     async (user) => {
+//         const meals = await getData('meals', user);
+//         const tests = await getData('tests', user);
+//         const combined = sortCombined(meals, tests);
+//         return {
+//             meals,
+//             tests,
+//             combined
+//         };
+//     }
+//   )
 
 // class FirebaseDB
 // {

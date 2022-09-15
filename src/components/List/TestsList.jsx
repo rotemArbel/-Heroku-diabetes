@@ -9,6 +9,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import {jsPDF} from "jspdf";
 import ReactDOMServer from "react-dom/server";
+import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 const TestsList = (props) => {
     useEffect(() => {
@@ -72,15 +73,24 @@ const TestsList = (props) => {
                         .reverse()
                         .map((key) => (
 
-                            <div className="swiper-slide">
+                            <div key={key} className="swiper-slide">
+                                {/* {console.log(List[key])} */}
                                 <h1>{key}</h1>
-                                {List[key].map((item) => (<Test test={item}/>))}
+                                {List[key].map((item) => (<Test deleteDoc={props.deleteDoc} test={item}/>))}
+                                <LineChart width={300} height={100} data={List[key]}>
+                            <Line type="monotone" dataKey="result" stroke="#8884d8" />
+                            {/* <CartesianGrid stroke="#ccc" /> */}
+                            <XAxis dataKey="time" />
+                            <YAxis domain={[0, 300]} />
+                          </LineChart>
                             </div>
+                            
 
                         ))}
+                        
                 </div>
             </div>
-
+           
             <div className="swiper-button-prev"></div>
             <div className="swiper-button-next"></div>
 
